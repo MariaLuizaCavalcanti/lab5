@@ -1,0 +1,30 @@
+package complementaCCC;
+
+public class Pesquisa extends AtividadeComplementar {
+	private String disciplina;
+	private int unidadeAcumulada;
+	
+	public Pesquisa(String tipo, int unidadeAcumulada, String disciplina, String codigo) {
+		super(tipo, codigo);
+		this.disciplina = disciplina;
+		this.unidadeAcumulada = unidadeAcumulada;
+	}
+	
+	@Override
+	public int getUnidadeAcumulada() {
+		return this.unidadeAcumulada;
+	}
+	
+	@Override
+	public boolean incrementaUnidadeAcumulada(int unidadeAcumulada) {
+		if (this.unidadeAcumulada + unidadeAcumulada <= 21) {
+			this.unidadeAcumulada += unidadeAcumulada;
+			return true;
+		}
+		return false;
+	}
+
+	
+	
+
+}
