@@ -1,0 +1,149 @@
+package complementaCCC;
+
+import java.util.ArrayList;
+//import java.util.Collections;
+
+public class FAQController {
+	private ArrayList<ItemFAQ> itens;
+	private UsuarioController usuario;
+
+	public FAQController() {
+		this.itens = new ArrayList<>();
+		this.usuario = usuario;
+	}
+	
+	public void setUsuario(UsuarioController usuario) {
+	    this.usuario = usuario;
+	}
+	
+	public boolean adicionarItemFAQ(String cpf, int senha, String pergunta) {
+		if (this.usuario.getAd() == null) {
+			throw new IllegalStateException("Não há um administrador cadastrado no sistema.");
+		}
+		if (!usuario.getAd().getCpf().equals(cpf)) {
+			return false;
+		}
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser nulo ou vazio.");
+		}
+
+		if (pergunta == null || pergunta.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (usuario.getAd().getSenha() != senha) {
+			return false;
+		}
+		for (ItemFAQ i : itens) {
+			if (i.getPergunta().toLowerCase().equals(pergunta.toLowerCase())) {
+				return false;
+			}
+		}
+		ItemFAQ itemNovo = new ItemFAQ(pergunta);
+		itens.add(itemNovo);
+		return true;
+
+	}
+
+	public boolean adicionarItemFAQ2(String cpf, int senha, String pergunta, String resposta) {
+		if (this.usuario.getAd() == null) {
+			throw new IllegalStateException("Não há um administrador cadastrado no sistema.");
+		}
+		if (!this.usuario.getAd().getCpf().equals(cpf)) {
+			return false;
+		}
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("Os CPF não pode ser nulo ou vazio.");
+		}
+		
+		if (pergunta == null || pergunta.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (this.usuario.getAd().getSenha() != senha) {
+			return false;
+		}
+		for (ItemFAQ i : itens) {
+			if (i.getPergunta().toLowerCase().equals(pergunta.toLowerCase())) {
+				return false;
+			}
+		}
+		ItemFAQ itemNovo = new ItemFAQ(pergunta, resposta);
+		itens.add(itemNovo);
+		return true;
+	}
+
+	public boolean alterarResposta(String cpf, int senha, int itemIndex, String resposta) {
+		if (!this.usuario.getAd().getCpf().equals(cpf)) {
+			return false;
+		}
+		if (cpf == null || cpf.isBlank() || resposta == null || resposta.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			return false;
+		}
+		if (this.usuario.getAd().getSenha() != senha) {
+			return false;
+		}
+		itens.get(itemIndex).alterarResposta(resposta);
+		return true;
+
+	}
+
+	public String listarFAQ() {
+		String lista = "";
+		for (ItemFAQ e : itens) {
+			lista += e.toString() + "\n";
+		}
+		return lista;
+	}
+
+	public String[] listarFAQPorDestaque() {
+		// Collections.sort(itens);
+		for (ItemFAQ i : itens) {
+			System.out.println(i.toString());
+		}
+		return null; // ajeitar
+	}
+
+	public boolean destacarItem(int itemIndex) {
+		if (itemIndex > itens.size() || itemIndex < itens.size()) {
+			throw new ArrayIndexOutOfBoundsException("Índice inválido");
+		}
+		itens.get(itemIndex).destacarItem();
+		return true;
+	}
+
+	public boolean atribuirTagsItemFAQ(String cpf, int senha, int itemIndex, String[] tags) {
+		if (!this.usuario.getAd().getCpf().equals(cpf)) {
+			return false;
+		}
+		if (cpf == null || cpf.isBlank() || tags.length == 0) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (this.usuario.getAd().getSenha() != senha) {
+			return false;
+		}
+		if (tags.length > 3 || itens.get(itemIndex).getTags().size() == 3) {
+			return false;
+		}
+		// verificar isso aqui
+		itens.get(itemIndex).addTag(tags);
+		return true;
+	}
+
+	// public String[] buscarItemFAQ(String[] tags) {
+	// for (ItemFAQ e: itens) {
+	// if (e.getTags().contains(tags)) {
+
+	// }
+	// }
+}
