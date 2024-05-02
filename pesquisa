@@ -1,30 +1,32 @@
 package complementaCCC;
 
+/**
+ * Representa uma atividade de pesquisa no sistema de atividades complementares.
+ */
 public class Pesquisa extends AtividadeComplementar {
 	private String disciplina;
 	private int unidadeAcumulada;
 	
+	 /**
+     * Cria uma nova atividade de pesquisa com o tipo, código, unidades acumuladas e disciplina fornecidos.
+     * @param tipo O tipo da atividade.
+     * @param codigo O código da atividade.
+     * @param unidadeAcumulada A quantidade de unidades acumuladas na atividade.
+     * @param disciplina A disciplina relacionada à atividade de estágio.
+     */
 	public Pesquisa(String tipo, int unidadeAcumulada, String disciplina, String codigo) {
 		super(tipo, codigo);
 		this.disciplina = disciplina;
 		this.unidadeAcumulada = unidadeAcumulada;
 	}
 	
+	/**
+     * Obtém a quantidade de unidades acumuladas na atividade de estágio.
+     * @return A quantidade de unidades acumuladas na atividade de estágio.
+     */
 	@Override
 	public int getUnidadeAcumulada() {
 		return this.unidadeAcumulada;
 	}
-	
-	@Override
-	public boolean incrementaUnidadeAcumulada(int unidadeAcumulada) {
-		if (this.unidadeAcumulada + unidadeAcumulada <= 21) {
-			this.unidadeAcumulada += unidadeAcumulada;
-			return true;
-		}
-		return false;
-	}
-
-	
-	
 
 }
