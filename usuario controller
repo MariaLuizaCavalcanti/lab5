@@ -1,0 +1,395 @@
+package complementaCCC;
+
+import java.util.*;
+
+public class UsuarioController {
+	private HashMap<String, Estudante> estudantes;
+	private Admin ad;
+
+	public UsuarioController() {
+		this.estudantes = new HashMap<>();
+		this.ad = ad;
+	}
+
+	public Admin getAd() {
+		return this.ad;
+	}
+
+	/**
+	 * Cria um novo estudante com os parâmetros fornecidos.
+	 *
+	 * @param nome      O nome do estudante. Não pode ser nulo ou vazio.
+	 * @param cpf       O CPF do estudante. Não pode ser nulo ou vazio.
+	 * @param senha     A senha do estudante. Deve ter exatamente 8 caracteres.
+	 * @param matricula A matrícula do estudante. Não pode ser nulo ou vazio.
+	 * @return true se o estudante foi criado com sucesso, false se o estudante já
+	 *         existir no sistema.
+	 * @throws IllegalArgumentException    Se algum dos parâmetros fornecidos for nulo
+	 *                                  ou vazio.
+	 * @throws IllegalArgumentException Se a senha não tiver exatamente 8
+	 *                                  caracteres.
+	 */
+	public boolean criarEstudante(String nome, String cpf, int senha, String matricula) {
+		if (nome == null || nome.isBlank() || cpf == null || cpf.isBlank() || matricula == null
+				|| matricula.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (this.estudantes.containsKey(cpf)) {
+			return false;
+		}
+		Estudante est = new Estudante(nome, cpf, senha, matricula);
+		estudantes.put(cpf, est);
+		return true;
+	}
+
+	/**
+	 * 
+	 ** Retorna uma lista de estudantes cadastrados no sistema, se o CPF e a senha do
+	 * administrador forem válidos.
+	 *
+	 * @param cpf   O CPF do administrador. Não pode ser nulo ou vazio.
+	 * @param senha A senha do administrador. Deve ter exatamente 8 caracteres.
+	 * @return Uma String contendo os detalhes de todos os estudantes cadastrados,
+	 *         separados por quebras de linha.
+	 * @throws IllegalArgumentException Se o CPF for nulo ou vazio.
+	 * @throws IllegalArgumentException Se a senha não tiver exatamente 8
+	 *                                  caracteres, se não houver um administrador
+	 *                                  cadastrado no sistema ou se a senha do
+	 *                                  administrador for inválida.
+	 */
+	public String exibirEstudantes(String cpf, int senha) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new NullPointerException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (ad == null) {
+			throw new IllegalStateException("Não há um administrador cadastrado no sistema.");
+		}
+		if (!ad.senhaValida(senha)) {
+			throw new IllegalArgumentException("Senha inválida.");
+		}
+
+		String listaEstudantes = "";
+		for (Estudante e : estudantes.values()) {
+			listaEstudantes += e.toString() + "\n";
+		}
+		return listaEstudantes;
+	}
+	
+	/**
+	 * 
+	 * @param cpf  O CPF do estudante. Não pode ser nulo ou vazio.
+	 * @param senha A senha do estudante. Deve ter exatamente 8 caracteres.
+	 * @param tipoAlteracao O tipo que vai ser alterado no sistema.
+	 * @param novoValor O novo valor do tipo alterado.
+	 * @return Um valor booleano indicando se a alteração ocorreu ou não.
+	 *  @throws NullPointerException Se o CPF for nulo ou vazio.
+	 * @throws IllegalArgumentException Se a senha não tiver exatamente 8
+	 *                                  caracteres ou se a senha do
+	 *                                  estudante for inválida.
+	 */
+	public boolean alterarEstudante(String cpf, int senha, String tipoAlteracao, String novoValor) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser nulo ou vazio.");
+		}
+		if (tipoAlteracao == null || tipoAlteracao.isBlank()) {
+			throw new IllegalArgumentException("O tipo de alteração não pode ser nulo ou vazio.");
+		}
+		if (novoValor == null || novoValor.isBlank()) {
+			throw new IllegalArgumentException("O novo valor não pode ser nulo ou vazio.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+
+		if (this.estudantes.get(cpf).getSenha() != senha) {
+			return false;
+		}
+
+		if (tipoAlteracao.toLowerCase().equals("nome")) {
+			this.estudantes.get(cpf).mudarNome(novoValor);
+			return true;
+		}
+		if (tipoAlteracao.toLowerCase().equals("senha")) {
+			this.estudantes.get(cpf).mudarSenha(novoValor);
+			return true;
+		}
+		if (tipoAlteracao.toLowerCase().equals("matrícula")) {
+			this.estudantes.get(cpf).mudarMatricula(novoValor);
+			return true;
+		} else {
+			throw new IllegalArgumentException("Tipo de alteração inválido.");
+		}
+	}
+
+	/**
+	 * Configura um novo administrador no sistema com o nome, CPF e senha fornecidos.
+	 * 
+	 * @param nome O nome do administrador.
+	 * @param cpf O CPF do administrador.
+	 * @param senha A senha do administrador, deve ser um número de 8 dígitos.
+	 * @return true se a configuração do administrador for bem-sucedida, caso contrário, false.
+	 * @throws NullPointerException se o nome ou o CPF forem nulos ou vazios.
+	 * @throws IllegalArgumentException se o tamanho da senha não for 8 dígitos.
+	 */
+	public boolean configurarAdminNoSistema(String nome, String cpf, int senha) {
+		if (nome == null || nome.isBlank() || cpf == null || cpf.isBlank()) {
+			throw new NullPointerException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (this.ad != null) {
+			return false;
+		}
+		Admin admin = new Admin(nome, cpf, senha);
+		this.ad = admin;
+		return true;
+	}
+
+	/**
+	 * Exibe os detalhes do administrador cadastrado no sistema com o CPF e senha fornecidos.
+	 * 
+	 * @param cpf O CPF do administrador que se deseja exibir.
+	 * @param senha A senha do administrador, deve ser um número de 8 dígitos.
+	 * @return Uma representação em String dos detalhes do administrador se o CPF e a senha forem válidos, senão retorna uma mensagem indicando o motivo da invalidade.
+	 * @throws IllegalArgumentException se o CPF for nulo ou vazio, ou se o tamanho da senha não for 8 dígitos.
+	 * @throws IllegalStateException se não houver um administrador cadastrado no sistema.
+	 */
+	public String exibirAdmin(String cpf, int senha) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser nulo ou vazio.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (ad == null) {
+			throw new IllegalStateException("Não há um administrador cadastrado no sistema.");
+		}
+		if (!ad.senhaValida(senha)) {
+			return "Senha inválida.";
+		}
+		if (!ad.getCpf().equals(cpf)) {
+			return "CPF inválido.";
+		}
+		return ad.toString();
+	}
+
+	/**
+	 * Configura um novo administrador no sistema, substituindo o administrador existente, com os dados fornecidos.
+	 * 
+	 * @param cpf O CPF do administrador atual para verificação de segurança.
+	 * @param senhaAtual A senha do administrador atual, deve ser um número de 8 dígitos.
+	 * @param nomeNovo O nome do novo administrador.
+	 * @param cpfNovo O CPF do novo administrador.
+	 * @param senhaNova A senha do novo administrador, deve ser um número de 8 dígitos.
+	 * @return true se a configuração do novo administrador for bem-sucedida, caso contrário, false.
+	 * @throws IllegalArgumentException se o CPF atual, o CPF novo, o nome novo ou as senhas (atual e nova) forem nulos, vazios ou de tamanho inválido.
+	 */
+	public boolean configurarNovoADMIN(String cpf, int senhaAtual, String nomeNovo, String cpfNovo, int senhaNova) {
+		if (this.ad == null) {
+			return false; // nao pode configurar um novo admin enquanto não houver um anterior.
+		}
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser vazio ou nulo.");
+		}
+		if (nomeNovo == null || nomeNovo.isBlank() || cpfNovo == null || cpfNovo.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser vazios ou nulos.");
+		}
+		if (String.valueOf(senhaNova).length() != 8 || String.valueOf(senhaAtual).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (!ad.senhaValida(senhaAtual)) {
+			return false;
+		}
+		ad.configurarAdminNovo(nomeNovo, cpfNovo, senhaNova);
+		return true;
+	}
+
+	public boolean configurarSenhaADMIN(String cpf, int senhaAtual, int senhaNova) {
+		if (this.ad == null) {
+			throw new IllegalStateException("Não há um administrador cadastrado no sistema.");
+		}
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser vazios ou nulos.");
+		}
+		if (String.valueOf(senhaNova).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (!this.ad.getCpf().equals(cpf)) {
+			return false;
+		}
+		if (!ad.senhaValida(senhaAtual)) {
+			return false;
+		}
+		ad.mudarSenhaADMIN(senhaNova);
+		return true;
+	}
+
+	public String criarAtividadeMonitoriaEmEstudante(String cpf, int senha, String tipo, String descricao,
+			int unidadeAcumulada, String disciplina) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser nulo ou vazio.");
+		}
+		if (tipo == null || tipo.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser vazios ou nulos.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (estudantes.get(cpf).getSenha() != senha) {
+			return "Senha inválida.";
+		}
+		if (unidadeAcumulada < 1) {
+			throw new IllegalArgumentException("A unidade acumulada precisa ser, no mínimo, 1.");
+		}
+		String codigo = estudantes.get(cpf).gerarCodigo();
+		if (estudantes.get(cpf).unidadeAcumuladaMonitoria() == 4
+				|| estudantes.get(cpf).unidadeAcumuladaMonitoria() + unidadeAcumulada > 4) {
+			return "A quantidade máxima de créditos já foi atingida.";
+		}
+		AtividadeComplementar atv = new Monitoria(tipo, unidadeAcumulada, disciplina, codigo);
+		estudantes.get(cpf).adicionarAtividadeComplementar(atv);
+		estudantes.get(cpf).incrementarUnidadeAcumulada(codigo, unidadeAcumulada);
+		return codigo;
+	}
+
+	public String criarAtividadePesquisaExtensaoEmEstudante(String cpf, int senha, String tipo, int unidadeAcumulada,
+			String disciplina) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser vazio ou nulo.");
+		}
+		if (tipo == null || tipo.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (estudantes.get(cpf).getSenha() != senha) {
+			return "Senha inválida.";
+		}
+		if (unidadeAcumulada < 0) {
+			throw new IllegalArgumentException("A unidade acumulada precisa ser positiva.");
+		}
+		String codigo = estudantes.get(cpf).gerarCodigo();
+		if (estudantes.get(cpf).unidadeAcumuladaPesquisa() == 21
+				|| estudantes.get(cpf).unidadeAcumuladaPesquisa() + unidadeAcumulada > 21) {
+			return "A quantidade máxima de créditos já foi atingida.";
+		}
+		AtividadeComplementar atv = new Pesquisa(tipo, unidadeAcumulada, disciplina, codigo);
+		estudantes.get(cpf).adicionarAtividadeComplementar(atv);
+		estudantes.get(cpf).incrementarUnidadeAcumulada(codigo, unidadeAcumulada);
+		return codigo;
+	}
+
+	public String criarAtividadePublicacaoEmEstudante(String cpf, int senha, String tipo, String titulo, String doi,
+			String qualis) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser vazio ou nulo.");
+		}
+		if (tipo == null || tipo.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (estudantes.get(cpf).getSenha() != senha) {
+			return "Senha inválida.";
+		}
+		String codigo = estudantes.get(cpf).gerarCodigo();
+		if (estudantes.get(cpf).calculaCreditosPublicacao() == 16) { // fazer para a soma
+			return "A quantidade máxima de créditos já foi atingida.";
+		}
+		AtividadeComplementar atv = new Publicacao(tipo, codigo, titulo, doi, qualis);
+		estudantes.get(cpf).adicionarAtividadeComplementar(atv);
+		// precisa incrementar os creditos da publicação e criat um metodo que calcule
+		// logo eles.
+		return codigo;
+	}
+
+	public String criarAtividadeEstagioEmEstudante(String cpf, int senha, String tipo, int unidadeAcumulada,
+			String disciplina) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser vazio ou nulo.");
+		}
+		if (tipo == null || tipo.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		if (estudantes.get(cpf).getSenha() != senha) {
+			return "Senha inválida.";
+		}
+		String codigo = estudantes.get(cpf).gerarCodigo();
+		if (estudantes.get(cpf).calculaCreditosEstagio() == 18) {
+			return "A quantidade máxima de créditos já foi atingida";
+		}
+		AtividadeComplementar atv = new Estagio(tipo, codigo, unidadeAcumulada, disciplina);
+		if (estudantes.get(cpf).unidadeAcumuladaEstagio() == 1080
+				|| estudantes.get(cpf).unidadeAcumuladaEstagio() + unidadeAcumulada > 1080) {
+			return "A quantidade máxima de créditos já foi atingida.";
+		}
+		estudantes.get(cpf).adicionarAtividadeComplementar(atv);
+		estudantes.get(cpf).incrementarUnidadeAcumulada(codigo, unidadeAcumulada);
+		return codigo;
+	}
+
+	public boolean alterarComprovacaoAtividade(String cpf, int senha, String codigoAtividade, String linkComprovacao) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser vazio ou nulo.");
+		}
+		if (codigoAtividade == null || codigoAtividade.isBlank() || linkComprovacao == null
+				|| linkComprovacao.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (estudantes.get(cpf).getSenha() != senha) {
+			return false;
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		estudantes.get(cpf).alterarLinkAtividadeCodigo(codigoAtividade, linkComprovacao);
+		return true;
+
+	}
+
+	public boolean alterarDescricaoAtividade(String cpf, int senha, String codigoAtividade, String descricao) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser vazio ou nulo.");
+		}
+
+		if (codigoAtividade == null || codigoAtividade.isBlank() || descricao == null || descricao.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (estudantes.get(cpf).getSenha() != senha) {
+			return false;
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		estudantes.get(cpf).alterarDescricaoAtividadeCodigo(codigoAtividade, descricao);
+		return true;
+	}
+
+	public double creditosAtividade(String cpf, int senha, String codigoAtividade) {
+		if (cpf == null || cpf.isBlank()) {
+			throw new IllegalArgumentException("O CPF não pode ser vazio ou nulo.");
+		}
+		if (codigoAtividade == null || codigoAtividade.isBlank()) {
+			throw new IllegalArgumentException("Os parâmetros não podem ser nulos ou vazios.");
+		}
+		if (estudantes.get(cpf).getSenha() != senha) {
+			throw new IllegalArgumentException("Senha incorreta.");
+		}
+		if (String.valueOf(senha).length() != 8) {
+			throw new IllegalArgumentException("Tamanho de senha inválido.");
+		}
+		return estudantes.get(cpf).calculaCreditosCodigo(codigoAtividade);
+	}
+}
