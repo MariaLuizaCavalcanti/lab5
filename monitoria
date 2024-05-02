@@ -1,0 +1,28 @@
+package complementaCCC;
+
+public class Monitoria extends AtividadeComplementar {
+
+	private String disciplina;
+	private int unidadeAcumulada;
+	
+	public Monitoria(String tipo, int unidadeAcumulada, String disciplina, String codigo) {
+		super(tipo, codigo);
+		this.unidadeAcumulada = unidadeAcumulada;
+		this.disciplina = disciplina;
+	}
+	
+	@Override
+	public int getUnidadeAcumulada() {
+		return this.unidadeAcumulada;
+	}
+	
+	@Override
+	public boolean incrementaUnidadeAcumulada(int unidadeAcumulada) {
+		if (this.unidadeAcumulada + unidadeAcumulada <= 4) {
+			this.unidadeAcumulada += unidadeAcumulada;
+			return true;
+		}
+		return false;
+	}
+
+}
