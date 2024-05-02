@@ -1,0 +1,893 @@
+package complementaCCC;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class UsuarioControllerTest {
+
+	private UsuarioController usuario;
+
+	@BeforeEach
+	public void setUp() {
+		usuario = new UsuarioController();
+	}
+
+	@Test
+	public void testCriarEstudanteComSucesso() {
+		assertTrue(usuario.criarEstudante("Maria", "12234", 12345678, "321011"));
+	}
+
+	@Test
+	public void testCriarEstudanteComParametrosVazios() {
+		try {
+			usuario.criarEstudante("", "", 12345678, "");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarEstudanteComParametrosNulos() {
+		try {
+			usuario.criarEstudante(null, null, 12345677, null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarEstudanteComSenhaDiferenteDeOitoDigitos() {
+		try {
+			usuario.criarEstudante("Maria", "12300231", 1234, "382749");
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarEstudanteComCpfJaExistente() {
+		usuario.criarEstudante("Maria", "123", 12345678, "3728");
+		assertFalse(usuario.criarEstudante("Luíza", "123", 12345667, "12379"));
+	}
+
+	@Test
+	public void testListarEstudantesComSenhaIncorreta() {
+		try {
+			usuario.configurarAdminNoSistema("Luiza", "123", 12334567);
+			usuario.exibirEstudantes("123", 12345678);
+		} catch (Exception e) {
+			assertEquals("Senha inválida.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testListarEstudantesComParametrosVazios() {
+		try {
+			usuario.configurarAdminNoSistema("Luiza", "123", 12334567);
+			usuario.exibirEstudantes("", 12345678);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testListarEstudantesComParametrosNulos() {
+		try {
+			usuario.configurarAdminNoSistema("Luiza", "123", 12334567);
+			usuario.exibirEstudantes(null, 12345678);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testListarEstudantesComTenhaComMenosDeOitoDigitos() {
+		try {
+			usuario.configurarAdminNoSistema("Luiza", "123", 12334567);
+			usuario.exibirEstudantes("123", 12345);
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testListarEstudantes() {
+		usuario.criarEstudante("Maria", "12234", 12345678, "321011");
+		usuario.criarEstudante("Ana", "134792", 12345678, "238479");
+		usuario.configurarAdminNoSistema("Luiza", "123", 12345678);
+		assertEquals(
+				"Estudante [matricula=238479, nome=Ana, cpf=134792]\nEstudante [matricula=321011, nome=Maria, cpf=12234]\n",
+				usuario.exibirEstudantes("123", 12345678));
+	}
+
+	@Test
+	public void testListarEstudantesQuandoNaoHaAdminCadastrado() {
+		try {
+			usuario.exibirEstudantes("123", 12345678);
+		} catch (Exception e) {
+			assertEquals("Não há um administrador cadastrado no sistema.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAlterarEstudanteComSenhaIncorreta() {
+		usuario.criarEstudante("Maria", "12234", 12345678, "321011");
+		assertFalse(usuario.alterarEstudante("12234", 12344321, "NOME", "luiza"));
+	}
+
+	@Test
+	public void testAlterarEstudanteComParametrosVazios() {
+		try {
+			usuario.alterarEstudante("", 12345678, "123", "nome");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAlterarEstudanteComParametrosNulos() {
+		try {
+			usuario.alterarEstudante(null, 12345678, "123", "nome");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAlterarEstudanteComTipoInvalido() {
+		usuario.criarEstudante("Maria", "12234", 12345678, "321011");
+		try {
+			usuario.alterarEstudante("12234", 12345678, "seila", "lalala");
+		} catch (Exception e) {
+			assertEquals("Tipo de alteração inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAlterarNomeEstudante() {
+		usuario.criarEstudante("Maria", "12234", 12345678, "321011");
+		assertTrue(usuario.alterarEstudante("12234", 12345678, "nome", "Luiza"));
+	}
+
+	@Test
+	public void testAlterarSenhaEstudante() {
+		usuario.criarEstudante("Maria", "12234", 12345678, "321011");
+		assertTrue(usuario.alterarEstudante("12234", 12345678, "senha", "12233456"));
+	}
+
+	@Test
+	public void testAlterarMatriculaEstudante() {
+		usuario.criarEstudante("Maria", "12234", 12345678, "321011");
+		assertTrue(usuario.alterarEstudante("12234", 12345678, "matrícula", "110776"));
+	}
+
+	@Test
+	public void configurarAdminNoSistemaQuandoNaoHaAinda() {
+		assertTrue(usuario.configurarAdminNoSistema("Ana", "1234", 12345678));
+	}
+
+	@Test
+	public void configurarAdminNoSistemaQuandoJaHa() {
+		usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+		assertFalse(usuario.configurarAdminNoSistema("Mariana", "2345", 12345789));
+	}
+
+	@Test
+	public void configurarAdminNoSistemaComParametrosVazios() {
+		try {
+			usuario.configurarAdminNoSistema("", "", 12345678);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void configurarAdminNoSistemaComParametrosNulos() {
+		try {
+			usuario.configurarAdminNoSistema(null, null, 12345678);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void configurarAdminNoSistemaComSenhaInvalida() {
+		try {
+			usuario.configurarAdminNoSistema("Maria", "3681", 12345);
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void exibirAdminQuandoNaoHa() {
+		try {
+			usuario.exibirAdmin("1234", 12345678);
+		} catch (Exception e) {
+			assertEquals("Não há um administrador cadastrado no sistema.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void exibirAdminComParametrosVazios() {
+		try {
+			usuario.exibirAdmin("", 12345678);
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void exibirAdminComParametrosNulos() {
+		try {
+			usuario.exibirAdmin(null, 12345678);
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void exibirAdminComCpfIncorreto() {
+		usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+		assertEquals("CPF inválido.", usuario.exibirAdmin("123", 12345678));
+	}
+
+	@Test
+	public void exibirAdminComSenhaIncorreto() {
+		usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+		assertEquals("Senha inválida.", usuario.exibirAdmin("1234", 12345648));
+	}
+
+	@Test
+	public void exibirAdminComSucesso() {
+		usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+		assertEquals("Admin [nome=Ana, cpf=1234]", usuario.exibirAdmin("1234", 12345678));
+	}
+
+	@Test
+	public void testConfigurarNovoAdminQuandoNaoHaUmAnterior() {
+		assertFalse(usuario.configurarNovoADMIN("123", 12345678, "Llalal", "234", 12345678));
+	}
+
+	@Test
+	public void testConfigurarNovoAdminComCpfAtualVazioOuNulo() {
+		try {
+			usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+			usuario.configurarNovoADMIN("", 12345678, "Maria", "23456", 12345679);
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigurarNovoAdminComParametrosVazios() {
+		try {
+			usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+			usuario.configurarNovoADMIN("1234", 12345678, "", "", 12345679);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser vazios ou nulos.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigurarNovoAdminComParametrosNulos() {
+		try {
+			usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+			usuario.configurarNovoADMIN("1234", 12345678, null, null, 12345679);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser vazios ou nulos.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigurarNovoAdminComSenhaDeTamanhoInvalido() {
+		try {
+			usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+			usuario.configurarNovoADMIN("1234", 12345678, "Mariah", "12345", 123456795);
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigurarNovoAdminComSenhaIncorreta() {
+		usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+		assertFalse(usuario.configurarNovoADMIN("1234", 12345670, "Mariah", "12345", 12345678));
+	}
+
+	@Test
+	public void testConfigurarSenhaAdminQuandoNaoHaAdminCadastrado() {
+		try {
+			usuario.configurarSenhaADMIN("1234", 12345678, 12345689);
+		} catch (Exception e) {
+			assertEquals("Não há um administrador cadastrado no sistema.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigurarSenhaAdminComParametrosVazios() {
+		try {
+			usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+			usuario.configurarSenhaADMIN("", 12345678, 12345689);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser vazios ou nulos.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigurarSenhaAdminComParametrosNulos() {
+		try {
+			usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+			usuario.configurarSenhaADMIN(null, 12345678, 12345689);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser vazios ou nulos.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigurarSenhaAdminComSenhaNovaInvalida() {
+		try {
+			usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+			usuario.configurarSenhaADMIN("1234", 12345678, 123456893);
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testConfigurarSenhaAdminComSenhaIncorreta() {
+		usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+		assertFalse(usuario.configurarSenhaADMIN("1234", 12345679, 12345670));
+	}
+
+	@Test
+	public void testConfigurarSenhaAdminComCpfInvalido() {
+		usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+		assertFalse(usuario.configurarSenhaADMIN("1235", 12345679, 12345678));
+	}
+
+	@Test
+	public void testCriarAtividadeMonitoriaEmEstudanteComCpfVazio() {
+		try {
+			usuario.criarAtividadeMonitoriaEmEstudante("", 12345678, "monitoria", "aaaa", 1, "fmcc");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeMonitoriaEmEstudanteComCpfNulo() {
+		try {
+			usuario.criarAtividadeMonitoriaEmEstudante(null, 12345678, "monitoria", "aaaa", 1, "fmcc");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeMonitoriaEmEstudanteComParametrosVazios() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadeMonitoriaEmEstudante("1234", 12345678, "", "", 1, "fmcc");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser vazios ou nulos.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeMonitoriaEmEstudanteComParametrosNulos() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadeMonitoriaEmEstudante("1234", 12345678, null, "aaaa", 1, null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser vazios ou nulos.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeMonitoriaEmEstudanteSenhaIncorreta() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		assertEquals("Senha inválida.",
+				usuario.criarAtividadeMonitoriaEmEstudante("1234", 12345689, "aaa", "bbbb", 1, "p2"));
+	}
+
+	@Test
+	public void testCriarAtividadeMonitoriaEmEstudanteSenhaInválida() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadeMonitoriaEmEstudante("1234", 123456789, "monitoria", "aaaa", 1, "fmcc");
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeMonitoriaEmEstudanteComUnidadeAcumuladaInvalida() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadeMonitoriaEmEstudante("1234", 12345678, "monitoria", "aaaa", 0, "fmcc");
+		} catch (Exception e) {
+			assertEquals("A unidade acumulada precisa ser, no mínimo, 1.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeMonitoriaEmEstudanteComUnidadeAcumuladaMaxJaAtingida() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadeMonitoriaEmEstudante("1234", 12345678, "monitoria", "aaaa", 4, "fmcc");
+			usuario.criarAtividadeMonitoriaEmEstudante("1234", 12345678, "monitoria", "aaaa", 1, "fmcc");
+
+		} catch (Exception e) {
+			assertEquals("A quantidade máxima de créditos já foi atingida.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeMonitoriaEmEstudanteComSucesso() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		assertEquals("1234_1",
+				usuario.criarAtividadeMonitoriaEmEstudante("1234", 12345678, "monitoria", "aaaa", 1, "fmcc"));
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComCpfVazio() {
+		try {
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("", 12345678, "pesquisa", 1, "fmcc");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComCpfNulo() {
+		try {
+			usuario.criarAtividadePesquisaExtensaoEmEstudante(null, 12345678, "pesquisa", 1, "fmcc");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComParametrosVazios() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "", 1, "");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComParametrosNulos() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, null, 1, null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComSenhaIncorreta() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		assertEquals("Senha inválida.",
+				usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345679, "pesquisa", 1, "fmcc"));
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComSenhaInválida() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 123456799, "pesquisa", 1, "fmcc");
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComUnidadeAcumuladaInvalida() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 0, "fmcc");
+		} catch (Exception e) {
+			assertEquals("A unidade acumulada precisa ser positiva.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComUnidadeAcumuladaMaiorDoQuePermitida() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 22, "fmcc");
+		} catch (Exception e) {
+			assertEquals("A quantidade máxima de créditos já foi atingida.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComUnidadeAcumuladaMax() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 20, "fmcc");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 2, "fmcc");
+
+		} catch (Exception e) {
+			assertEquals("A quantidade máxima de créditos já foi atingida.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComUnidadeAcumuladaMax2() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 20, "fmcc");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 2, "p2");
+
+		} catch (Exception e) {
+			assertEquals("A quantidade máxima de créditos já foi atingida.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComSucesso() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 12, "fmcc");
+
+		} catch (Exception e) {
+			assertEquals("1234_01", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testCriarAtividadePesquisa2() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 12, "fmcc");
+		assertEquals("1234_2", usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 12, "fmcc"));
+	}
+
+	@Test
+	public void testCriarAtividadePesquisaEmEstudanteComSucesso3() {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 12, "fmcc2");
+			usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 5, "p1");
+			assertEquals("1234_3", usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 5, "p1"));
+
+	}
+
+	@Test
+	public void testCriarAtividadeEstagioEmEstudanteComCpfVazio() {
+		try {
+			usuario.criarAtividadeEstagioEmEstudante("", 12345678, "estágio", 60, "ic");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeEstagioEmEstudanteComCpfNulo() {
+		try {
+			usuario.criarAtividadeEstagioEmEstudante(null, 12345678, "estágio", 60, "ic");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeEstagioEmEstudanteComParametrosVazios() {
+		try {
+			usuario.criarAtividadeEstagioEmEstudante("123", 12345678, "", 60, "");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeEstagioEmEstudanteComParametrosNulos() {
+		try {
+			usuario.criarAtividadeEstagioEmEstudante("123", 12345678, null, 60, null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeEstagioEmEstudanteComSenhaInvalida() {
+		try {
+			usuario.criarAtividadeEstagioEmEstudante("123", 1234, "estágio", 530, "fmcc2");
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadeEstagioEmEstudanteComSenhaIncorreta() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		assertEquals("Senha inválida.",
+				usuario.criarAtividadeEstagioEmEstudante("1234", 12345689, "estágio", 530, "fmcc2"));
+	}
+
+	@Test
+	public void testCriarAtividadeEstagioEmEstudanteComUnidadeAcumuladaMax() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		assertEquals("A quantidade máxima de créditos já foi atingida.",
+				usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 1081, "p1"));
+
+	}
+
+	@Test
+	public void testCriarAtividadeEstagioEmEstudanteComUnidadeAcumuladaMax2() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 1000, "p1");
+		assertEquals("A quantidade máxima de créditos já foi atingida.",
+				usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "Estágio", 90, "fmcc1"));
+	}
+
+	@Test
+	public void testCriarAtividadeEstagioEmEstudanteComSucesso() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 150, "p1");
+		usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 60, "p2");
+		usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 130, "eda");
+		assertEquals("1234_4", usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 65, "oac"));
+	}
+
+	@Test
+	public void testCriarAtividadePublicacaoEmEstudanteComCpfVazio() {
+		try {
+			usuario.criarAtividadePublicacaoEmEstudante("", 12345678, "publicação", "Título", "periódico", "A1");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePublicacaoEmEstudanteComCpfNull() {
+		try {
+			usuario.criarAtividadePublicacaoEmEstudante(null, 12345678, "publicação", "Título", "periódico", "A1");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePublicacaoEmEstudanteComParametrosfVazios() {
+		try {
+			usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, "", "", "", "");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePublicacaoEmEstudanteComParametrosNulos() {
+		try {
+			usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, null, null, null, null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePublicacaoEmEstudanteComSenhaInvalida() {
+		try {
+			usuario.criarAtividadePublicacaoEmEstudante("1234", 123456789, "publicação", "Título", "periódico", "A1");
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testCriarAtividadePublicacaoEmEstudanteComSenhaIncorreta() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		assertEquals("Senha inválida.", usuario.criarAtividadePublicacaoEmEstudante("1234", 12345677, "publicação", "Título", "periódico", "A1"));
+	}
+	
+	//@Test
+	//public void testCadastrarAtividadePublicacaoEmEstudanteComUnidadeAcumuladaMax() {
+		//usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		//usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, "publicação", "Título T", "periódico", "A1");
+		//usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, "publicação", "Título I", "periódico", "A2");
+		//usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, "publicação", "Título O", "periódico", "A1");
+		//usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, "publicação", "Título U", "periódico", "A2");
+		//assertEquals("A quantidade máxima de créditos já foi atingida.", usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, "publicação", "Título L", "CONFERÊNCIA", "A1"));
+	//} 
+	
+	@Test
+	public void testCadastrarAtividadePublicacaoEmEstudanteComSucesso() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		assertEquals("1234_1", usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, "publicação", "Título", "periódico", "A1"));
+	}
+	
+	@Test
+	public void testAlterarComprovacaoAtividadeComCpfNulo() {
+		try {
+			usuario.alterarComprovacaoAtividade(null, 12345678, "1234_1", "link");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAlterarComprovacaoAtividadeComCpfVazio() {
+		try {
+			usuario.alterarComprovacaoAtividade("", 12345678, "1234_1", "link");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAlterarComprovacaoAtividadeComParametrosVazios() {
+		try {
+			usuario.alterarComprovacaoAtividade("1234", 12345678, "", "");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+	@Test
+	public void testAlterarComprovacaoAtividadeComParametrosNulos() {
+		try {
+			usuario.alterarComprovacaoAtividade("1234", 12345678, null, null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAlterarComprovacaoAtividadeComSenhaInvalida() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.alterarComprovacaoAtividade("1234", 123456789, "1234_1", "Link");
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAlterarComprovacaoAtividadeComSenhaIncorreta() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		assertFalse(usuario.alterarComprovacaoAtividade("1234", 12345673, "1234_1", "Link"));
+	}
+	
+	@Test
+	public void testAlterarComprovacaoAtividadeComSucesso() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, "publicação", "Título", "periódico", "A1");
+		assertTrue(usuario.alterarComprovacaoAtividade("1234", 12345678, "1234_1", "Link L"));
+	}
+	
+	@Test
+	public void testAlterarDescricaooAtividadeComCpfNulo() {
+		try {
+			usuario.alterarDescricaoAtividade(null, 12345678, "1234_1", "descricao d");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAlterarDescricaooAtividadeComCpfVazio() {
+		try {
+			usuario.alterarDescricaoAtividade("", 12345678, "1234_1", "descricao d");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAlterarDescricaoAtividadeComParametrosVazios() {
+		try {
+			usuario.alterarDescricaoAtividade("1234", 12345678, "", "");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAlterarDescricaoAtividadeComParametrosNulos() {
+		try {
+			usuario.alterarDescricaoAtividade("1234", 12345678, null, null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAlterarDescricaoAtividadeComSenhaInvalida() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.alterarDescricaoAtividade("1234", 123456789, "1234_1", "Desc");
+		} catch (Exception e) {
+			assertEquals("Tamanho de senha inválido.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAlterarDescricaoAtividadeComSenhaIncorreta() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		assertFalse(usuario.alterarDescricaoAtividade("1234", 12345673, "1234_1", "Descr"));
+	}
+	
+	@Test
+	public void testAlterarDescricaoAtividadeComSucesso() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		usuario.criarAtividadePublicacaoEmEstudante("1234", 12345678, "publicação", "Título", "periódico", "A1");
+		assertTrue(usuario.alterarDescricaoAtividade("1234", 12345678, "1234_1", "Descrição D"));
+	}
+	
+	@Test
+	public void testCreditosAtividadeComCpfNulo() {
+		try {
+			usuario.creditosAtividade(null, 123456778, "1234_1");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testCreditosAtividadeComCpfVazio() {
+		try {
+			usuario.creditosAtividade("", 123456778, "1234_1");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser vazio ou nulo.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testCreditosAtividadeComParametrosVazios() {
+		try {
+			usuario.creditosAtividade("1234", 123456778, "");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testCreditosAtividadeComParametrosNulos() {
+		try {
+			usuario.creditosAtividade("1234", 123456778, null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testCreditosAtividadeComSenhaIncorreta() {
+		try {
+			usuario.criarEstudante("Maria", "1234", 12345678, "110");
+			usuario.creditosAtividade("1234", 12345673, "1234_1");
+		} catch (Exception e) {
+			assertEquals("Senha incorreta.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testCreditosAtividadeComSucessoMonitoria() {
+		usuario.criarEstudante("Maria", "12345", 12345678, "110");
+		usuario.criarAtividadeMonitoriaEmEstudante("12345", 12345678, "monitoria", "aaaa", 1, "fmcc");
+		usuario.criarAtividadeMonitoriaEmEstudante("12345", 12345678, "monitoria", "aaaa", 1, "fmcc");
+		assertEquals(8, usuario.creditosAtividade("12345", 12345678, "12345_1"));
+		
+	}
+	
+	@Test
+	public void testCreditosAtividadeComSucessoPesquisa() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		usuario.criarAtividadePesquisaExtensaoEmEstudante("1234", 12345678, "pesquisa", 12, "fmcc");
+		assertEquals(9, usuario.creditosAtividade("1234", 12345678, "1234_1"));
+		
+	}
+	
+	@Test
+	public void testCreditosAtividadeComSucessoEstagio() {
+		usuario.criarEstudante("Maria", "1234", 12345678, "110");
+		usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 60, "p2");
+		usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 60, "p2");
+		assertEquals(2, usuario.creditosAtividade("1234", 12345678, "1234_1"));
+	}
+	
+}
