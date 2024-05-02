@@ -1,38 +1,63 @@
 package complementaCCC;
+
 import java.util.*;
 
-public class ItemFAQ implements Comparable<ItemFAQ>{
+/**
+ * Representa um item na FAQ.
+ * 
+ * @author Maria Luíza Andrade Cavalcanti
+ *
+ */
+public class ItemFAQ implements Comparable<ItemFAQ> {
 	private String pergunta;
 	private String resposta;
 	private int destaque;
-	private HashSet<String>tags;
+	private HashSet<String> tags;
 
-
+	/**
+     * Cria um novo item de FAQ com a pergunta fornecida.
+     * @param pergunta A pergunta que se deseja registrar.
+     */
 	public ItemFAQ(String pergunta) {
 		this.pergunta = pergunta;
 		this.destaque = 0;
 		this.tags = new HashSet<>();
 	}
 
-
+	 /**
+     * Cria um novo item de FAQ com a pergunta e resposta fornecidas.
+     * @param pergunta A pergunta que se deseja registrar.
+     * @param resposta A resposta que se deseja registrar.
+     */
 	public ItemFAQ(String pergunta, String resposta) {
 		this.pergunta = pergunta;
 		this.resposta = resposta;
 		this.destaque = 0;
 		this.tags = new HashSet<>();
 	}
-	
+
+	/**
+     * Altera a resposta do item de FAQ.
+     * @param resposta A nova resposta.
+     */
 	public void alterarResposta(String resposta) {
 		this.resposta = resposta;
 	}
-	
+
+	 /**
+     * Destaca o item na FAQ.
+     */
 	public void destacarItem() {
 		this.destaque++;
 	}
-	
-	public void addTag(String[]tags) {
+
+	/**
+     * Adiciona tags ao item da FAQ.
+     * @param tags As tags a serem adicionadas.
+     */
+	public void addTag(String[] tags) {
 		int cont = 0;
-		for (String t: tags) {
+		for (String t : tags) {
 			if (cont < 3) {
 				this.tags.add(t);
 				cont++;
@@ -40,32 +65,33 @@ public class ItemFAQ implements Comparable<ItemFAQ>{
 		}
 	}
 
-
+	/**
+     * Obtém as tags associadas ao item na FAQ.
+     * @return As tags associadas ao item na FAQ.
+     */
 	public HashSet<String> getTags() {
 		return tags;
 	}
-
 
 	public String getPergunta() {
 		return pergunta;
 	}
 
-
 	public String getResposta() {
 		return resposta;
 	}
-
 
 	public int getDestaque() {
 		return destaque;
 	}
 
-
+	/**
+	 * @return Representação textual de um item da FAQ.
+	 */
 	@Override
 	public String toString() {
 		return "ItemFAQ [pergunta=" + pergunta + ", resposta=" + resposta + "]";
 	}
-
 
 	@Override
 	public int compareTo(ItemFAQ o) {
