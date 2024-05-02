@@ -3,19 +3,36 @@ package complementaCCC;
 import java.util.ArrayList;
 //import java.util.Collections;
 
+/**
+ * Controlador para a lista de perguntas frequentes (FAQ).
+ */
 public class FAQController {
 	private ArrayList<ItemFAQ> itens;
 	private UsuarioController usuario;
 
+	 /**
+     * Cria um novo controlador de FAQ.
+     */
 	public FAQController() {
 		this.itens = new ArrayList<>();
 		this.usuario = usuario;
 	}
 	
+	 /**
+     * Define o controlador de usuários associado ao FAQ.
+     * @param usuario O controlador de usuários.
+     */
 	public void setUsuario(UsuarioController usuario) {
 	    this.usuario = usuario;
 	}
 	
+	 /**
+     * Adiciona um novo item de FAQ apenas com a pergunta.
+     * @param cpf O CPF do administrador que está adicionando o item.
+     * @param senha A senha do administrador.
+     * @param pergunta A pergunta do FAQ.
+     * @return true se o item for adicionado com sucesso, false caso contrário.
+     */
 	public boolean adicionarItemFAQ(String cpf, int senha, String pergunta) {
 		if (this.usuario.getAd() == null) {
 			throw new IllegalStateException("Não há um administrador cadastrado no sistema.");
@@ -47,6 +64,14 @@ public class FAQController {
 
 	}
 
+	/**
+     * Adiciona um novo item de FAQ com pergunta e resposta.
+     * @param cpf O CPF do administrador que está adicionando o item.
+     * @param senha A senha do administrador.
+     * @param pergunta A pergunta do FAQ.
+     * @param resposta A resposta do FAQ.
+     * @return true se o item for adicionado com sucesso, false caso contrário.
+     */
 	public boolean adicionarItemFAQ2(String cpf, int senha, String pergunta, String resposta) {
 		if (this.usuario.getAd() == null) {
 			throw new IllegalStateException("Não há um administrador cadastrado no sistema.");
@@ -77,6 +102,14 @@ public class FAQController {
 		return true;
 	}
 
+	/**
+     * Altera a resposta de um item de FAQ.
+     * @param cpf O CPF do administrador que está alterando a resposta.
+     * @param senha A senha do administrador.
+     * @param itemIndex O índice do item a ser alterado.
+     * @param resposta A nova resposta.
+     * @return true se a resposta for alterada com sucesso, false caso contrário.
+     */
 	public boolean alterarResposta(String cpf, int senha, int itemIndex, String resposta) {
 		if (!this.usuario.getAd().getCpf().equals(cpf)) {
 			return false;
@@ -95,6 +128,10 @@ public class FAQController {
 
 	}
 
+	/**
+     * Lista todos os itens de FAQ.
+     * @return Uma string contendo a lista de itens de FAQ.
+     */
 	public String listarFAQ() {
 		String lista = "";
 		for (ItemFAQ e : itens) {
@@ -103,6 +140,10 @@ public class FAQController {
 		return lista;
 	}
 
+	  /**
+     * Lista os itens de FAQ por destaque.
+     * @return Um array de strings contendo os itens de FAQ ordenados por destaque.
+     */
 	public String[] listarFAQPorDestaque() {
 		// Collections.sort(itens);
 		for (ItemFAQ i : itens) {
@@ -111,6 +152,11 @@ public class FAQController {
 		return null; // ajeitar
 	}
 
+	 /**
+     * Destaca um item de FAQ.
+     * @param itemIndex O índice do item a ser destacado.
+     * @return true se o item for destacado com sucesso, false caso não seja destacado.
+     */
 	public boolean destacarItem(int itemIndex) {
 		if (itemIndex > itens.size() || itemIndex < itens.size()) {
 			throw new ArrayIndexOutOfBoundsException("Índice inválido");
@@ -119,6 +165,14 @@ public class FAQController {
 		return true;
 	}
 
+	 /**
+     * Atribui tags a um item de FAQ.
+     * @param cpf O CPF do administrador que está atribuindo as tags.
+     * @param senha A senha do administrador.
+     * @param itemIndex O índice do item a que as tags serão atribuídas.
+     * @param tags As tags a serem atribuídas.
+     * @return true se as tags forem atribuídas com sucesso, false caso contrário.
+     */
 	public boolean atribuirTagsItemFAQ(String cpf, int senha, int itemIndex, String[] tags) {
 		if (!this.usuario.getAd().getCpf().equals(cpf)) {
 			return false;
