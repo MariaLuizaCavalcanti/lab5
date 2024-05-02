@@ -1,0 +1,45 @@
+package complementaCCC;
+
+public class AtividadeComplementar {
+	protected String tipo;
+	protected String descricao;
+	protected String codigo;
+	protected String link;
+	
+	public AtividadeComplementar(String tipo, String codigo) {
+		this.tipo = tipo;
+		this.descricao = descricao;
+		this.codigo = codigo;
+	}
+	
+	public void alterarDescricao(String novaDescricao) {
+		this.descricao = novaDescricao;
+	}
+	
+	public void alterarLink(String novoLink) {
+		this.link = novoLink;
+	}
+	
+	public String getTipo() {
+		return this.tipo;
+	}
+	
+	public String getCodigo() {
+		return this.codigo;
+	}
+	
+	public int getUnidadeAcumulada() {
+		return 0;
+	}
+
+	public boolean incrementaUnidadeAcumulada(int unidadeAcumulada) {
+		return false;
+	}
+	
+	public int calculaCreditos() {
+		return 0;
+	}
+	
+	
+
+}
