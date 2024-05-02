@@ -1,0 +1,150 @@
+package complementaCCC;
+
+import java.util.*;
+
+public class Estudante extends Usuario {
+	private String matricula;
+	private ArrayList<AtividadeComplementar> atividades;
+
+	public Estudante(String nome, String cpf, int senha, String matricula) {
+		super(nome, cpf, senha);
+		this.matricula = matricula;
+		this.atividades = new ArrayList<>();
+	}
+
+	public double calculaCreditosCodigo(String codigoAtividade) {
+		double creditos = 0;
+		for (AtividadeComplementar a : atividades) {
+			if (a.getCodigo().equals(codigoAtividade)) {
+				if (a.getTipo().toLowerCase().equals("monitoria")) {
+					creditos += a.getUnidadeAcumulada() * 4;
+				}
+				if (a.getTipo().toLowerCase().equals("pesquisa")) {
+					creditos += a.getUnidadeAcumulada() * 0.83;
+				}
+				if (a.getTipo().toLowerCase().equals("publicação")) {
+					creditos += a.getUnidadeAcumulada() * a.calculaCreditos();
+				}
+				if (a.getTipo().toLowerCase().equals("estágio")) {
+					creditos += a.getUnidadeAcumulada() / 60;
+				}
+			}
+		}
+		return (int) Math.floor(creditos);
+	}
+
+	public String getMatricula() {
+		return matricula;
+	}
+
+	public void mudarNome(String novoNome) {
+		this.nome = novoNome;
+	}
+
+	public void mudarMatricula(String novaMatricula) {
+		this.matricula = novaMatricula;
+	}
+
+	public void mudarSenha(String senhaNova) {
+		if (senhaNova.length() == 8) {
+			this.senha = Integer.parseInt(senhaNova);
+		}
+	}
+
+	public void adicionarAtividadeComplementar(AtividadeComplementar atv) {
+		this.atividades.add(atv);
+	}
+
+	public String gerarCodigo() {
+		return this.cpf + "_" + (this.atividades.size() + 1);
+	}
+
+	public void alterarLinkAtividadeCodigo(String codigo, String link) {
+		for (AtividadeComplementar a : atividades) {
+			if (a.getCodigo().equals(codigo)) {
+				a.alterarLink(link);
+				;
+			}
+		}
+	}
+
+	public void alterarDescricaoAtividadeCodigo(String codigo, String descricao) {
+		for (AtividadeComplementar a : atividades) {
+			if (a.getCodigo().equals(codigo)) {
+				a.alterarDescricao(descricao);
+				;
+			}
+		}
+	}
+
+	public void incrementarUnidadeAcumulada(String codigo, int unidadeAcumulada) {
+		for (AtividadeComplementar a : atividades) {
+			if (a.getCodigo().equals(codigo)) {
+				a.incrementaUnidadeAcumulada(unidadeAcumulada);
+			}
+		}
+	}
+
+	public int unidadeAcumuladaMonitoria() {
+		int unidadeMonitoriaEstudante = 0;
+		for (AtividadeComplementar a : atividades) {
+			if (a.getTipo().toLowerCase().equals("monitoria")) {
+				unidadeMonitoriaEstudante += a.getUnidadeAcumulada();
+			}
+		}
+		return unidadeMonitoriaEstudante;
+	}
+
+	public int unidadeAcumuladaPesquisa() {
+		int unidadePesquisaEstudante = 0;
+		for (AtividadeComplementar a : atividades) {
+			if (a.getTipo().toLowerCase().equals("pesquisa e extensão")) {
+				unidadePesquisaEstudante += a.getUnidadeAcumulada();
+			}
+		}
+		return unidadePesquisaEstudante;
+	}
+
+	public int unidadeAcumuladaEstagio() {
+		int unidadeEstagio = 0;
+		for (AtividadeComplementar a : atividades) {
+			if (a.getTipo().toLowerCase().equals("estágio")) {
+				unidadeEstagio += a.getUnidadeAcumulada();
+			}
+		}
+		return unidadeEstagio;
+	}
+
+	//analisar
+	public int calculaCreditosEstagio() {
+		int unidade = 0;
+		double creditos = 0;
+		for (AtividadeComplementar a : atividades) {
+			if (a.getTipo().toLowerCase().equals("estágio")) {
+				unidade += a.getUnidadeAcumulada();
+			}
+		}
+		if (unidade < 300) {
+			return 0;
+		} else {
+			creditos = unidade / 60;
+		}
+		int creditosInteiros = (int) creditos;
+		return creditosInteiros;
+	}
+
+	public int calculaCreditosPublicacao() {
+		int creditos = 0;
+		for (AtividadeComplementar a : atividades) {
+			if (a.getTipo().toLowerCase().equals("publicação")) {
+				creditos += a.calculaCreditos();
+			}
+		}
+		return creditos;
+	}
+	
+	@Override
+	public String toString() {
+		return "Estudante [matricula=" + matricula + ", nome=" + nome + ", cpf=" + cpf + "]";
+	}
+}
