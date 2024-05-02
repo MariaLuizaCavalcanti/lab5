@@ -2,16 +2,38 @@ package complementaCCC;
 
 import java.util.*;
 
+/**
+ * Representa um estudante no sistema. É uma subclasse de Usuario.
+ * 
+ * @author Maria Luíza Andrade Cavalcanti.
+ *
+ */
 public class Estudante extends Usuario {
 	private String matricula;
 	private ArrayList<AtividadeComplementar> atividades;
 
+	/**
+	 * Cria um novo estudante com o nome, CPF, senha e matrícula fornecidos.
+	 * 
+	 * @param nome      O nome do estudante.
+	 * @param cpf       O CPF do estudante.
+	 * @param senha     A senha do estudante.
+	 * @param matricula A matrícula do estudante.
+	 */
 	public Estudante(String nome, String cpf, int senha, String matricula) {
 		super(nome, cpf, senha);
 		this.matricula = matricula;
 		this.atividades = new ArrayList<>();
 	}
 
+	/**
+	 * Calcula os créditos obtidos pelo estudante em uma atividade, identificada
+	 * pelo código.
+	 * 
+	 * @param codigoAtividade O código da atividade para a qual os créditos serão
+	 *                        calculados.
+	 * @return Os créditos obtidos pelo estudante na atividade (inteiros).
+	 */
 	public double calculaCreditosCodigo(String codigoAtividade) {
 		double creditos = 0;
 		for (AtividadeComplementar a : atividades) {
@@ -51,14 +73,30 @@ public class Estudante extends Usuario {
 		}
 	}
 
+	/**
+	 * Adiciona uma atividade complementar na coleção de atividades do estudante.
+	 * 
+	 * @param atv A atividade complementar que se deseja associar ao estudante.
+	 */
 	public void adicionarAtividadeComplementar(AtividadeComplementar atv) {
 		this.atividades.add(atv);
 	}
 
+	/**
+	 * Gera um código para a atividade complementar com base no cpf do estudante e
+	 * na quantidade de atividades já cadastradas.
+	 * 
+	 * @return
+	 */
 	public String gerarCodigo() {
 		return this.cpf + "_" + (this.atividades.size() + 1);
 	}
 
+	/**
+	 * Altera o link de comprovação de uma atividade do estudante.
+	 * @param codigo O código da atividade que se deseja alterar o link.
+	 * @param link O link que se deseja adicionar à atividade.
+	 */
 	public void alterarLinkAtividadeCodigo(String codigo, String link) {
 		for (AtividadeComplementar a : atividades) {
 			if (a.getCodigo().equals(codigo)) {
@@ -68,6 +106,11 @@ public class Estudante extends Usuario {
 		}
 	}
 
+	/**
+	 * Altera a descrição de uma atividade do estudante.
+	 * @param codigo O código da atividade que se deseja alterar a descrição.
+	 * @param descricao A descrição que se deseja adicionar à atividade.
+	 */
 	public void alterarDescricaoAtividadeCodigo(String codigo, String descricao) {
 		for (AtividadeComplementar a : atividades) {
 			if (a.getCodigo().equals(codigo)) {
@@ -77,6 +120,11 @@ public class Estudante extends Usuario {
 		}
 	}
 
+	/**
+	 * Incrementa a unidade acumulada de uma atividade do estudante.
+	 * @param codigo O código da atividade que se deseja incrementar a unidade acumulada.
+	 * @param unidadeAcumulada A unidade acumulada.
+	 */
 	public void incrementarUnidadeAcumulada(String codigo, int unidadeAcumulada) {
 		for (AtividadeComplementar a : atividades) {
 			if (a.getCodigo().equals(codigo)) {
@@ -85,6 +133,10 @@ public class Estudante extends Usuario {
 		}
 	}
 
+	/**
+	 * Retorna a quantidade de unidades acumuladas pelo estudante em atividades de monitoria.
+	 * @return A quantidade de unidades acumuladas em atividades de monitoria.
+	 */
 	public int unidadeAcumuladaMonitoria() {
 		int unidadeMonitoriaEstudante = 0;
 		for (AtividadeComplementar a : atividades) {
@@ -95,6 +147,10 @@ public class Estudante extends Usuario {
 		return unidadeMonitoriaEstudante;
 	}
 
+	/**
+	 * Retorna a quantidade de unidades acumuladas pelo estudante em atividades de pesquisa.
+	 * @return A quantidade de unidades acumuladas em atividades de pesquisa.
+	 */
 	public int unidadeAcumuladaPesquisa() {
 		int unidadePesquisaEstudante = 0;
 		for (AtividadeComplementar a : atividades) {
@@ -105,6 +161,10 @@ public class Estudante extends Usuario {
 		return unidadePesquisaEstudante;
 	}
 
+	/**
+	 * Retorna a quantidade de unidades acumuladas pelo estudante em atividades de estágio.
+	 * @return A quantidade de unidades acumuladas em atividades de estágio.
+	 */
 	public int unidadeAcumuladaEstagio() {
 		int unidadeEstagio = 0;
 		for (AtividadeComplementar a : atividades) {
@@ -115,7 +175,10 @@ public class Estudante extends Usuario {
 		return unidadeEstagio;
 	}
 
-	//analisar
+	/**
+	 * Retorna a quantidade de créditos que o estudante possui em atividades de estágio.
+	 * @return A quantidade de créditos que o estudante possui em atividades de estágio.
+	 */
 	public int calculaCreditosEstagio() {
 		int unidade = 0;
 		double creditos = 0;
@@ -133,6 +196,7 @@ public class Estudante extends Usuario {
 		return creditosInteiros;
 	}
 
+	// analisar
 	public int calculaCreditosPublicacao() {
 		int creditos = 0;
 		for (AtividadeComplementar a : atividades) {
@@ -142,9 +206,13 @@ public class Estudante extends Usuario {
 		}
 		return creditos;
 	}
-	
+
+	/**
+	 * Retorna uma representação textual do estudante.
+	 */
 	@Override
 	public String toString() {
 		return "Estudante [matricula=" + matricula + ", nome=" + nome + ", cpf=" + cpf + "]";
 	}
 }
+
