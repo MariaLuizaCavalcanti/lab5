@@ -1,38 +1,51 @@
 package complementaCCC;
 
+/**
+ * Representa um administrador no sistema.
+ */
 public class Admin extends Usuario {
-private boolean alteracao;
-	
+
+	/**
+	 * Cria um novo administrador com o nome, CPF e senha fornecidos.
+	 * 
+	 * @param nome  O nome do administrador.
+	 * @param cpf   O CPF do administrador.
+	 * @param senha A senha do administrador.
+	 */
 	public Admin(String nome, String cpf, int senha) {
 		super(nome, cpf, senha);
-		this.alteracao = false;
 	}
-	
+
+	/**
+	 * Configura um novo administrador com o nome, CPF e senha fornecidos.
+	 * 
+	 * @param nomeNovo  O novo nome do administrador.
+	 * @param cpfNovo   O novo CPF do administrador.
+	 * @param senhaNova A nova senha do administrador.
+	 */
 	public void configurarAdminNovo(String nomeNovo, String cpfNovo, int senhaNova) {
 		this.nome = nomeNovo;
 		this.cpf = cpfNovo;
 		this.senha = senhaNova;
 	}
 
-	public void mudarStatusAlteracao() {
-		this.alteracao = true;
-	}
-	
-	public boolean getAlteracao() {
-		return this.alteracao;
-	}
-	
+	/**
+	 * Altera a senha do administrador.
+	 * 
+	 * @param novaSenha A nova senha do administrador.
+	 */
 	public void mudarSenhaADMIN(int novaSenha) {
 		if (String.valueOf(novaSenha).length() == 8) {
 			this.senha = novaSenha;
 		}
-	} //tem que retornar alguma coisa?
+	}
 
+	/**
+	 * @return Uma representação textual do administrador cadastrado no sistema.
+	 */
 	@Override
 	public String toString() {
 		return "Admin [nome=" + nome + ", cpf=" + cpf + "]";
 	}
-	
-	
-	
+
 }
