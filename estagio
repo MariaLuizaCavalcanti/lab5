@@ -1,0 +1,28 @@
+package complementaCCC;
+
+public class Estagio extends AtividadeComplementar {
+
+	private String disciplina;
+	private int unidadeAcumulada;
+	
+	public Estagio(String tipo, String codigo, int unidadeAcumulada, String disciplina) {
+		super(tipo, codigo);
+		this.unidadeAcumulada = unidadeAcumulada;
+		this.disciplina = disciplina;
+	}
+	
+	@Override
+	public int getUnidadeAcumulada() {
+		return this.unidadeAcumulada;
+	}
+	
+	@Override
+	public boolean incrementaUnidadeAcumulada(int unidadeAcumulada) {
+		if (this.unidadeAcumulada < 1080 || this.unidadeAcumulada + unidadeAcumulada <= 1080) {
+			this.unidadeAcumulada += unidadeAcumulada;
+			return true;
+		}
+		return false;
+	}
+
+}
