@@ -1,0 +1,64 @@
+package complementaCCC;
+
+public class Publicacao extends AtividadeComplementar {
+	private String titulo;
+	private String doi;
+	private String qualis;
+	private int creditos;
+
+	public Publicacao(String tipo, String codigo, String titulo, String doi, String qualis) {
+		super(tipo, codigo);
+		this.titulo = titulo;
+		this.doi = doi;
+		this.qualis = qualis;
+		this.creditos = creditos;
+	}
+
+	public void creditosPublicacao(String doi, String qualis) {
+		if (doi.toLowerCase().equals("periódico")) {
+			if (qualis.equals("A1")) {
+				creditos += 4;
+			} else if (qualis.equals("A2")) {
+				creditos += 4;
+			} else if (qualis.equals("A3")) {
+				creditos += 3;
+			}
+		}
+
+		if (doi.toLowerCase().equals("conferência")) {
+			if (qualis.equals("A1")) {
+				creditos += 3;
+			} else if (qualis.equals("A2")) {
+				creditos += 3;
+			} else if (qualis.equals("A3")){
+				creditos += 2;
+			}
+		}
+	}
+	
+	@Override
+	public int calculaCreditos() {
+		int creditos = 0;
+		if (doi.toLowerCase().equals("periódico")) {
+			if (qualis.equals("A1")) {
+				creditos += 4;
+			} else if (qualis.equals("A2")) {
+				creditos += 4;
+			} else if (qualis.equals("A3")) {
+				creditos += 3;
+			}
+		}
+
+		if (doi.toLowerCase().equals("conferência")) {
+			if (qualis.equals("A1")) {
+				creditos += 3;
+			} else if (qualis.equals("A2")) {
+				creditos += 3;
+			} else if (qualis.equals("A3")){
+				creditos += 2;
+			}
+		}
+		return creditos;
+	}
+
+}
