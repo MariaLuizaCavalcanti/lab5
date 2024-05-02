@@ -869,8 +869,7 @@ class UsuarioControllerTest {
 	public void testCreditosAtividadeComSucessoMonitoria() {
 		usuario.criarEstudante("Maria", "12345", 12345678, "110");
 		usuario.criarAtividadeMonitoriaEmEstudante("12345", 12345678, "monitoria", "aaaa", 1, "fmcc");
-		usuario.criarAtividadeMonitoriaEmEstudante("12345", 12345678, "monitoria", "aaaa", 1, "fmcc");
-		assertEquals(8, usuario.creditosAtividade("12345", 12345678, "12345_1"));
+		assertEquals(4, usuario.creditosAtividade("12345", 12345678, "12345_1"));
 		
 	}
 	
@@ -886,8 +885,7 @@ class UsuarioControllerTest {
 	public void testCreditosAtividadeComSucessoEstagio() {
 		usuario.criarEstudante("Maria", "1234", 12345678, "110");
 		usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 60, "p2");
-		usuario.criarAtividadeEstagioEmEstudante("1234", 12345678, "estágio", 60, "p2");
-		assertEquals(2, usuario.creditosAtividade("1234", 12345678, "1234_1"));
-	}
+		assertEquals(1, usuario.creditosAtividade("1234", 12345678, "1234_1"));
+	}	
 	
 }
