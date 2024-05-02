@@ -1,10 +1,21 @@
 package complementaCCC;
 
+/**
+ * Classe que representa um usuário no sistema;
+ * @author Maria Luíza Andrade Cavalcanti
+ *
+ */
 public class Usuario {
 	protected String nome;
 	protected String cpf;
 	protected int senha;
 
+	/**
+	 * Cria um novo usuário com o nome, CPF e senha fornecidos.
+	 * @param nome O nome do usuário.
+	 * @param cpf O CPF do usuário.
+	 * @param senha A senha do usuário.
+	 */
 	public Usuario(String nome, String cpf, int senha) {
 		this.nome = nome;
 		this.cpf = cpf;
@@ -23,6 +34,11 @@ public class Usuario {
 		return senha;
 	}
 
+	/**
+	 * Verifica se a senha fornecida é válida para o usuário.
+	 * @param senha A senha a ser verificada.
+	 * @return true se a senha fornecida coincide com a senha do usuário, false caso contrário.
+	 */
 	public boolean senhaValida(int senha) {
 		if (this.senha == senha) {
 			return true;
