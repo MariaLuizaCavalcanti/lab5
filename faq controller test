@@ -1,0 +1,168 @@
+package complementaCCC;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class FAQControllerTest {
+
+	private FAQController faq;
+	private UsuarioController usuario;
+
+	@BeforeEach
+	public void setUp() {
+		faq = new FAQController();
+		usuario = new UsuarioController();
+		usuario.configurarAdminNoSistema("Ana", "1234", 12345678);
+	    faq.setUsuario(usuario);
+	}
+	
+	@Test
+	public void testAdicionarItemFAQComCpfVazio() {
+		try {
+			faq.adicionarItemFAQ("", 12345678, "LALALALa");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAdicionarItemFAQComCpfNulo() {
+		try {
+			faq.adicionarItemFAQ(null, 12345678, "LALALALa");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAdicionarItemFAQComPerguntaVazia() {
+		try {
+			faq.adicionarItemFAQ("1234", 12345678, "");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAdicionarItemFAQComPerguntaNula() {
+		try {
+			faq.adicionarItemFAQ("1234", 12345678, null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAdicionarItemFAQComCpfDiferente() {
+		assertFalse(faq.adicionarItemFAQ("12345", 12345678, "Pergunta bla bla bla"));
+
+	}
+
+	@Test
+	public void testAdicionarItemFAQComSenhaIncorreta() {
+		assertFalse(faq.adicionarItemFAQ("1234", 12345689, "Lalalal"));
+	}
+
+	@Test
+	public void testAdicionarItemFAQ() {
+		assertTrue(faq.adicionarItemFAQ("1234", 12345678, "Pergunta p"));
+	}
+	
+	@Test
+	public void testAdicionarPerguntaRepetida() {
+		assertTrue(faq.adicionarItemFAQ("1234", 12345678, "Pergunta p"));
+		assertFalse(faq.adicionarItemFAQ("1234", 12345678, "Pergunta p"));
+	}
+
+	@Test
+	public void testAdicionarItemFAQ2SemAdminCadastrado() {
+		try {
+			faq.adicionarItemFAQ2("123", 12345678, "Lalalala", "Resposta");
+		} catch (Exception e) {
+			assertEquals("Não há um administrador cadastrado no sistema.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAdicionarItemFAQ2ComCpfVazio() {
+		try {
+			faq.adicionarItemFAQ2("", 12345678, "LALALALa", "Resposta");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAdicionarItemFAQ2ComCpfNulo() {
+		try {
+			faq.adicionarItemFAQ2(null, 12345678, "LALALALa", "Resposta");
+		} catch (Exception e) {
+			assertEquals("O CPF não pode ser nulo ou vazio.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAdicionarItemFAQ2ComPerguntaVazia() {
+		try {
+			faq.adicionarItemFAQ2("1234", 12345678, "", "Resposta");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAdicionarItemFAQ2ComPerguntaNula() {
+		try {
+			faq.adicionarItemFAQ2("1234", 12345678, null, "Resposta");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAdicionarItemFAQ2ComRespostaVazia() {
+		try {
+			faq.adicionarItemFAQ2("1234", 12345678, "TTTTT", "");
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAdicionarItemFAQ2ComRespostaNula() {
+		try {
+			faq.adicionarItemFAQ2("1234", 12345678, "TTTTT", null);
+		} catch (Exception e) {
+			assertEquals("Os parâmetros não podem ser nulos ou vazios.", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAdicionarItemFAQ2ComCpfDiferente() {
+		assertFalse(faq.adicionarItemFAQ2("12345", 12345678, "Pergunta bla bla bla", "Resposta rrr"));
+
+	}
+
+	@Test
+	public void testAdicionarItemFAQ2ComSenhaIncorreta() {
+		assertFalse(faq.adicionarItemFAQ2("1234", 12345689, "Lalalal", "Resposta"));
+	}
+
+	@Test
+	public void testAdicionarItemFAQ2() {
+		assertTrue(faq.adicionarItemFAQ2("1234", 12345678, "Pergunta p", "Resposta r"));
+	}
+	
+	@Test
+	public void testListarFAQ() {
+		faq.adicionarItemFAQ("1234", 12345678, "Pergunta p");
+		faq.adicionarItemFAQ("1234", 12345678, "Pergunta r");
+		//erro quando adiciona um item faq2
+		assertEquals("ItemFAQ [pergunta=Pergunta p, resposta=null]\nItemFAQ [pergunta=Pergunta r, resposta=null]\n", faq.listarFAQ());
+	}
+
+
+
+}
