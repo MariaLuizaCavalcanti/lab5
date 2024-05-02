@@ -1,45 +1,73 @@
 package complementaCCC;
 
+/**
+ * Representa uma atividade complementar no sistema.
+ */
 public class AtividadeComplementar {
 	protected String tipo;
 	protected String descricao;
 	protected String codigo;
 	protected String link;
-	
+
+	/**
+	 * Cria uma nova atividade complementar com o tipo e código fornecidos.
+	 * 
+	 * @param tipo   O tipo da atividade.
+	 * @param codigo O código da atividade.
+	 */
 	public AtividadeComplementar(String tipo, String codigo) {
 		this.tipo = tipo;
 		this.descricao = descricao;
 		this.codigo = codigo;
 	}
-	
+
+	/**
+	 * Altera a descrição da atividade complementar.
+	 * 
+	 * @param novaDescricao A nova descrição da atividade.
+	 */
 	public void alterarDescricao(String novaDescricao) {
 		this.descricao = novaDescricao;
 	}
-	
+
+	/**
+	 * Altera o link de comprovação da atividade complementar.
+	 * 
+	 * @param novaDescricao O novo link de comprovação da atividade.
+	 */
 	public void alterarLink(String novoLink) {
 		this.link = novoLink;
 	}
-	
+
 	public String getTipo() {
 		return this.tipo;
 	}
-	
+
 	public String getCodigo() {
 		return this.codigo;
 	}
-	
+
 	public int getUnidadeAcumulada() {
 		return 0;
 	}
 
+	/**
+	 * Incrementa a quantidade de unidades acumuladas na atividade complementar.
+	 * 
+	 * @param unidadeAcumulada A quantidade a ser incrementada.
+	 * @return true se a operação for bem-sucedida, false caso contrário.
+	 */
 	public boolean incrementaUnidadeAcumulada(int unidadeAcumulada) {
 		return false;
 	}
-	
+
+	/**
+	 * Calcula os créditos da atividade complementar.
+	 * 
+	 * @return Os créditos da atividade.
+	 */
 	public int calculaCreditos() {
 		return 0;
 	}
-	
-	
 
 }
