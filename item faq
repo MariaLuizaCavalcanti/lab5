@@ -1,0 +1,74 @@
+package complementaCCC;
+import java.util.*;
+
+public class ItemFAQ implements Comparable<ItemFAQ>{
+	private String pergunta;
+	private String resposta;
+	private int destaque;
+	private HashSet<String>tags;
+
+
+	public ItemFAQ(String pergunta) {
+		this.pergunta = pergunta;
+		this.destaque = 0;
+		this.tags = new HashSet<>();
+	}
+
+
+	public ItemFAQ(String pergunta, String resposta) {
+		this.pergunta = pergunta;
+		this.resposta = resposta;
+		this.destaque = 0;
+		this.tags = new HashSet<>();
+	}
+	
+	public void alterarResposta(String resposta) {
+		this.resposta = resposta;
+	}
+	
+	public void destacarItem() {
+		this.destaque++;
+	}
+	
+	public void addTag(String[]tags) {
+		int cont = 0;
+		for (String t: tags) {
+			if (cont < 3) {
+				this.tags.add(t);
+				cont++;
+			}
+		}
+	}
+
+
+	public HashSet<String> getTags() {
+		return tags;
+	}
+
+
+	public String getPergunta() {
+		return pergunta;
+	}
+
+
+	public String getResposta() {
+		return resposta;
+	}
+
+
+	public int getDestaque() {
+		return destaque;
+	}
+
+
+	@Override
+	public String toString() {
+		return "ItemFAQ [pergunta=" + pergunta + ", resposta=" + resposta + "]";
+	}
+
+
+	@Override
+	public int compareTo(ItemFAQ o) {
+		return Integer.compare(this.destaque, o.getDestaque());
+	}
+}
